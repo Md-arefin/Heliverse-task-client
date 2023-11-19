@@ -100,8 +100,32 @@ const Home = () => {
 
     }, [dispatch, currentPage, totalPages, searchQuery]);
 
+    const handleGenderClick = (gender) => {
+        console.log('handleGenderClick', gender);
+        fetch(`${import.meta.env.VITE_Localhost}/users/Gender?gender=${gender}`)
+        .then(res => res.json())
+        .then(data => {
+            dispatch(setUsersData(data));
+        })
+    }
 
+    const handleDomainClick = (domain) => {
+        console.log('handleDomainClick', domain);
+        fetch(`${import.meta.env.VITE_Localhost}/users/Domain?domain=${domain}`)
+        .then(res => res.json())
+        .then(data => {
+            dispatch(setUsersData(data));
+        })
+    }
 
+    const handleAvailableClick = (available) => {
+        console.log('handleAvailableClick', available);
+        fetch(`${import.meta.env.VITE_Localhost}/users/Availability?available=${available}`)
+        .then(res => res.json())
+        .then(data => {
+            dispatch(setUsersData(data));
+        })
+    }
 
     return (
         <div>
@@ -126,7 +150,13 @@ const Home = () => {
                     <div className='px-5 grid grid-cols-2 gap-1'>
                         {
                             filterByGender.map((gender, i) => <div key={i} className=' border-2 border-slate-400 rounded-xl w-48 my-2 p-3 flex items-center justify-start gap-5'>
-                                <input type="checkbox" value={gender} className="checkbox" /> <p className='text-xl font-serif'>{gender}</p></div>)
+                                <input
+                                    type="checkbox"
+                                    value={gender}
+                                    className="checkbox"
+                                    onChange={() => handleGenderClick(gender)}
+                                />
+                                <p className='text-xl font-serif'>{gender}</p></div>)
                         }
                     </div>
 
@@ -135,7 +165,12 @@ const Home = () => {
                     <div className='px-5 grid grid-cols-2 gap-1'>
                         {
                             filterByDomain.map((domain, i) => <div key={i} className=' border-2 border-slate-400 rounded-xl w-48 my-2 p-3 flex items-center justify-start gap-5'>
-                                <input type="checkbox" value={domain} className="checkbox" /> <p className='text-xl font-serif'>{domain}</p></div>)
+                                <input
+                                    type="checkbox"
+                                    value={domain}
+                                    className="checkbox"
+                                    onChange={() => handleDomainClick(domain)}
+                                /> <p className='text-xl font-serif'>{domain}</p></div>)
                         }
                     </div>
 
@@ -143,10 +178,23 @@ const Home = () => {
 
                     <div className='px-5 grid grid-cols-2 gap-5'>
                         <div className=' border-2 border-slate-400 rounded-xl w-48 my-2 p-3 flex items-center justify-start gap-5'>
-                            <input type="checkbox" value='true' className="checkbox" /> <p className='text-xl font-serif'>True</p></div>
+                            <input
+                                type="checkbox"
+                                value='true'
+                                className="checkbox"
+                                onChange={() => handleAvailableClick(true)}
+                            />
+                            <p className='text-xl font-serif'>True</p></div>
 
                         <div className=' border-2 border-slate-400 rounded-xl w-48 my-2 p-3 flex items-center justify-start gap-5'>
-                            <input type="checkbox" value='false' className="checkbox" /> <p className='text-xl font-serif'>False</p></div>
+                            <input
+                                type="checkbox"
+                                value='false'
+                                className="checkbox"
+                                onChange={() => handleAvailableClick(false)}
+                            />
+                            <p className='text-xl font-serif'>False</p>
+                        </div>
                     </div>
                 </div>
 
