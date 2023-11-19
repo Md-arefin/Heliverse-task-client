@@ -12,11 +12,11 @@ const UserCard = ({ user }) => {
     return (
         <div>
             <div
-                className="card w-96 bg-base-100 hover:bg-slate-700 hover:text-white hover:mt-[-10px] z-10 hover:scale-110 transition-transform shadow-xl  rounded-3xl p-10 font-serif space-y-3"
+                className="card w-96 bg-base-100 hover:bg-slate-700 hover:text-white hover:mt-[-10px] hover:z-100 hover:scale-110 transition-transform shadow-xl  rounded-3xl p-10 font-serif space-y-3"
             >
                 <img src={avatar} className="rounded-full mx-auto border-2 border-neutral-300 shadow-md w-20 mb-5 cursor-pointer" alt={first_name} title={`${first_name} ${last_name}`} />
 
-                <p className='text-center text-2xl'><span className='font-semibold'>Name: </span> {first_name} {last_name}</p>
+                <p className='text-center font-semibold text-2xl'>{first_name} {last_name}</p>
 
                 <p ><span className='font-bold'>Email: </span>
                     <span className='text-blue-500 underline cursor-pointer text-xl'>{email}</span>
@@ -49,7 +49,7 @@ const UserCard = ({ user }) => {
                 <p><span className='font-bold'>Available: </span> {available}</p>
 
                 <div>
-                    <button className="btn bg-slate-400 border-2 border-transparent rounded-3xl w-2/3 mx-14 p-2 text-xl">Add to the teams</button>
+                    <button className="btn bg-slate-400 border-2 border-transparent rounded-3xl w-2/3 mx-14 p-2 text-xl">Add to the team</button>
                 </div>
             </div>
         </div>

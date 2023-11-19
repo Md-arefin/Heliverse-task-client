@@ -11,6 +11,9 @@ const Home = () => {
     const currentPage = useSelector((state) => state.usersData.currentPage);
     const dispatch = useDispatch();
     const [pageButtons, setPageButtons] = useState([]);
+    const [filterByGender, setFilterByGender] = useState([]);
+    const [filterByDomain, setFilterByDomain] = useState([]);
+    const [filterByAvailable, setFilterByAvailable] = useState([]);
     const totalPages = Math.ceil(users.length / 20);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -24,9 +27,25 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
+        const gender = users?.map(user => user.gender);
+        const uniqueGender = [...new Set(gender)]
+        setFilterByGender(uniqueGender);
+
+        const domain = users?.map(user => user.domain);
+        const uniqueDomain = [...new Set(domain)]
+        setFilterByDomain(uniqueDomain);
+
+        const available = users?.map(user => user.available);
+        const uniqueAvailable = [...new Set(available)]
+        setFilterByAvailable(uniqueAvailable);
+    }, [users]);
+
+    console.log(filterByAvailable);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
-                let endpoint = `${import.meta.env.VITE_Localhost}/users`;
+                let endpoint = `${import.meta.env.VITE_Localhost}/users?page=${currentPage}`;
 
                 if (searchQuery) {
                     endpoint = `${import.meta.env.VITE_Localhost}/users/search?query=${searchQuery}&page=${currentPage}`;
@@ -82,6 +101,8 @@ const Home = () => {
     }, [dispatch, currentPage, totalPages, searchQuery]);
 
 
+
+
     return (
         <div>
 
@@ -97,10 +118,43 @@ const Home = () => {
 
             <h1 className='text-3xl text-center my-10 font-bold font-serif'>Users Information</h1>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 my-5 mx-10'>
-                {
-                    usersData.map(user => <UserCard key={user._id} user={user} />)
-                }
+            <div className='w-full flex flex-col md:flex-row gap-5 relative'>
+
+                <div className='h-[90vh] w-1/4 sticky top-0 pt-3'>
+                    <h6 className='text-2xl text-center font-serif mb-2'>Genders</h6>
+
+                    <div className='px-5 grid grid-cols-2 gap-1'>
+                        {
+                            filterByGender.map((gender, i) => <div key={i} className=' border-2 border-slate-400 rounded-xl w-48 my-2 p-3 flex items-center justify-start gap-5'>
+                                <input type="checkbox" value={gender} className="checkbox" /> <p className='text-xl font-serif'>{gender}</p></div>)
+                        }
+                    </div>
+
+                    <h6 className='text-2xl text-center font-serif my-2'>Domains</h6>
+
+                    <div className='px-5 grid grid-cols-2 gap-1'>
+                        {
+                            filterByDomain.map((domain, i) => <div key={i} className=' border-2 border-slate-400 rounded-xl w-48 my-2 p-3 flex items-center justify-start gap-5'>
+                                <input type="checkbox" value={domain} className="checkbox" /> <p className='text-xl font-serif'>{domain}</p></div>)
+                        }
+                    </div>
+
+                    <h6 className='text-2xl text-center font-serif my-2'>Availabilities</h6>
+
+                    <div className='px-5 grid grid-cols-2 gap-5'>
+                        <div className=' border-2 border-slate-400 rounded-xl w-48 my-2 p-3 flex items-center justify-start gap-5'>
+                            <input type="checkbox" value='true' className="checkbox" /> <p className='text-xl font-serif'>True</p></div>
+
+                        <div className=' border-2 border-slate-400 rounded-xl w-48 my-2 p-3 flex items-center justify-start gap-5'>
+                            <input type="checkbox" value='false' className="checkbox" /> <p className='text-xl font-serif'>False</p></div>
+                    </div>
+                </div>
+
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 my-5 mx-10'>
+                    {
+                        usersData.map(user => <UserCard key={user._id} user={user} />)
+                    }
+                </div>
             </div>
 
             <div className='flex justify-center gap-5 my-16'>
