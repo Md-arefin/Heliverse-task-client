@@ -46,7 +46,7 @@ const UserCard = ({ user }) => {
 
                 <p><span className='font-bold'>Domain: </span> {domain}</p>
 
-                <p><span className='font-bold'>Available: </span> {available}</p>
+                <p><span className='font-bold'>Available: </span> <span>{available === true ? 'True' : 'False'}</span></p>
 
                 <div>
                     <button className="btn bg-slate-400 border-2 border-transparent rounded-3xl w-2/3 mx-14 p-2 text-xl">Add to the team</button>
