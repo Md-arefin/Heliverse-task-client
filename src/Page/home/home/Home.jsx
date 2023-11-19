@@ -95,7 +95,7 @@ const Home = () => {
                 />
             </div>
 
-            <h1 className='text-3xl text-center my-5 font-bold font-serif'>Users Information</h1>
+            <h1 className='text-3xl text-center my-10 font-bold font-serif'>Users Information</h1>
 
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 my-5 mx-10'>
                 {
