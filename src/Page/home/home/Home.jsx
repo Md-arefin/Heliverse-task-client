@@ -1,15 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch , useSelector } from 'react-redux';
+import { setUsers } from '../../../redux/features/users/usersSlice';
+import UserCard from '../../../components/userCard/userCard';
 
 const Home = () => {
 
-    const [users, setUsers] = useState([]);
+    const users =useSelector(state => state.users);
+    const dispatch = useDispatch()
+
+    console.log(users);
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_Localhost}/users`)
             .then(res => res.json())
             .then(data => {
-                setUsers(data);
-                console.log(data);
+                dispatch(setUsers(data));
+                // console.log(data);
             })
     }, []);
 
@@ -19,19 +25,7 @@ const Home = () => {
         <div>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 my-5'>
                 {
-                    users.map(user => <div
-                        key={user._id} className="card w-96 bg-base-100 shadow-xl h-52 rounded-3xl p-5"
-                    >
-                        <img src={user.avatar} alt="" />
-                      <p><span className='font-bold'>Name: </span> {user.first_name} {user.last_name}</p>  
-
-                      <p><span className='font-bold'>domain: </span> {user.domain}</p>  
-
-                      <p><span className='font-bold'>email: </span> {user.email} </p>  
-
-                      <p><span className='font-bold'>gender: </span> {user.gender}</p>  
-                      <p><span className='font-bold'>available: </span> {user.available}</p>  
-                    </div>)
+                    users.map(user => <UserCard key={user._id} user={user} />)
                 }
             </div>
         </div>
