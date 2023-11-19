@@ -12,6 +12,7 @@ const Home = () => {
     const dispatch = useDispatch();
     const [pageButtons, setPageButtons] = useState([]);
     const totalPages = Math.ceil(users.length / 20);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_Localhost}/usersModel`)
@@ -23,77 +24,98 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_Localhost}/users?page=${currentPage}`)
-            .then(res => res.json())
-            .then(data => {
+        const fetchData = async () => {
+            try {
+                let endpoint = `${import.meta.env.VITE_Localhost}/users`;
+
+                if (searchQuery) {
+                    endpoint = `${import.meta.env.VITE_Localhost}/users/search?query=${searchQuery}&page=${currentPage}`;
+                }
+
+                const response = await fetch(endpoint);
+                const data = await response.json();
+
                 dispatch(setUsersData(data));
-                console.log(data);
-            });
+                dispatch(setTotalPages(totalPages));
 
-        dispatch(setTotalPages(totalPages));
+                const visiblePageRange = 6;
+                let startPage = Math.max(1, currentPage - Math.floor(visiblePageRange / 4));
+                let endPage = Math.min(totalPages, startPage + visiblePageRange - 1);
 
-        const visiblePageRange = 6;
-        let startPage = Math.max(1, currentPage - Math.floor(visiblePageRange / 4));
-        let endPage = Math.min(totalPages, startPage + visiblePageRange - 1);
-
-
-        if (endPage - startPage + 1 < visiblePageRange) {
-            startPage = Math.max(1, endPage - visiblePageRange + 1);
-        }
+                if (endPage - startPage + 1 < visiblePageRange) {
+                    startPage = Math.max(1, endPage - visiblePageRange + 1);
+                }
 
 
-        const buttons = [];
-        if (startPage > 1) {
-            buttons.push(<button key={1} onClick={() => dispatch(setCurrentPage(1))}>1</button>);
-        }
+                const buttons = [];
+                if (startPage > 1) {
+                    buttons.push(<button key={1} onClick={() => dispatch(setCurrentPage(1))}>1</button>);
+                }
 
-        for (let i = startPage; i <= endPage; i++) {
-            buttons.push(
-                <button key={i} onClick={() => dispatch(setCurrentPage(i))} disabled={i === currentPage}>
-                    {i}
-                </button>
-            );
-        }
+                for (let i = startPage; i <= endPage; i++) {
+                    buttons.push(
+                        <button key={i} onClick={() => dispatch(setCurrentPage(i))} disabled={i === currentPage}>
+                            {i}
+                        </button>
+                    );
+                }
 
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                buttons.push(<span key="ellipsis-end">...</span>);
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        buttons.push(<span key="ellipsis-end">...</span>);
+                    }
+                    buttons.push(
+                        <button key={totalPages} onClick={() => dispatch(setCurrentPage(totalPages))}>
+                            {totalPages}
+                        </button>
+                    );
+                }
+
+                setPageButtons(buttons);
+
+            } catch (error) {
+                console.error('Error fetching users:', error);
             }
-            buttons.push(
-                <button key={totalPages} onClick={() => dispatch(setCurrentPage(totalPages))}>
-                    {totalPages}
-                </button>
-            );
-        }
+        };
+        fetchData();
 
-        setPageButtons(buttons);
+    }, [dispatch, currentPage, totalPages, searchQuery]);
 
-    }, [dispatch, currentPage, totalPages]);
-
-console.log(pageButtons);
 
     return (
         <div>
+
+            <div className='w-full flex justify-center my-10 md:my-16'>
+                <input
+                    type="text"
+                    placeholder="Search by name"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="input input-bordered w-3/4 border-sky-200 border-2 rounded-3xl p-5 text-xl focus:border-green-300"
+                />
+            </div>
+
+            <h1 className='text-3xl text-center my-5 font-bold font-serif'>Users Information</h1>
+
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 my-5 mx-10'>
                 {
                     usersData.map(user => <UserCard key={user._id} user={user} />)
                 }
             </div>
 
-            {
-                totalPages > 1 && <div className='flex justify-center gap-5 my-5'>
-                    {/* Pagination controls */}
-                    <button onClick={() => dispatch(setCurrentPage(currentPage - 1))} disabled={currentPage === 1} className='disabled:opacity-50 btn border-2 border-slate-400 rounded-2xl w-32'>
-                        Previous Page
-                    </button>
+            <div className='flex justify-center gap-5 my-16'>
+                {/* Pagination controls */}
+                <button onClick={() => dispatch(setCurrentPage(currentPage - 1))} disabled={currentPage === 1} className='disabled:opacity-50 btn border-2 border-slate-400 rounded-2xl w-32'>
+                    Previous Page
+                </button>
 
-                    {pageButtons.map((page, i) => <div key={i} className='btn border-2 border-slate-400 rounded-2xl w-8 text-center'>{page}</div>)}
+                {pageButtons.map((page, i) => <div key={i} className='btn border-2 border-slate-400 rounded-2xl w-8 text-center'>{page}</div>)}
 
-                    <button onClick={() => dispatch(setCurrentPage(currentPage + 1))} disabled={currentPage === totalPages} className='disabled:opacity-50 btn border-2 border-slate-400 rounded-2xl w-32'>
-                        Next Page
-                    </button>
-                </div>
-            }
+                <button onClick={() => dispatch(setCurrentPage(currentPage + 1))} disabled={currentPage === totalPages} className='disabled:opacity-50 btn border-2 border-slate-400 rounded-2xl w-32'>
+                    Next Page
+                </button>
+            </div>
+
 
         </div>
     );
