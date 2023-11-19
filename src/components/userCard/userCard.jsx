@@ -8,7 +8,7 @@ const UserCard = ({ user }) => {
 
     const { avatar, first_name, last_name, domain, email, gender, available } = user;
 
-    console.log(user);
+    // console.log(user);
     return (
         <div>
             <div

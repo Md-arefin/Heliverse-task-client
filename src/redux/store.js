@@ -1,11 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import usersReducer from './features/users/usersSlice';
+import usersDataSlice from './features/users/userDataSlice.jsx';
 
 
 const store = configureStore({
   reducer: {
-    // Add the generated reducer as a specific top-level slice
-    users: usersReducer
+    users: usersReducer,
+    usersData: usersDataSlice,
   },
 });
 
